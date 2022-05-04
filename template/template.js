@@ -1,6 +1,8 @@
 var canvas, g;
-var characterPosX, characterPosY, characterImage;
+var characterPosX, characterPosY, characterImage, characterR;
 var speed, acceleration;
+var enemyPosX, enemyPosY, enemyImage, enemySpeed, enemyR;
+var score;
 
 onload = function () {
   // 描画コンテキストの取得
@@ -17,10 +19,21 @@ onload = function () {
 function init() {
   characterPosX = 100;
   characterPosY = 400;
+  characterR = 16;
   characterImage = new Image();
   characterImage.src = "./reimu.png";
   speed = 0;
   acceleration = 0;
+
+  enemyPosX = 600;
+  enemyPosY = 400;
+  enemyR = 16;
+  enemyImage = new Image();
+  enemyImage.src = "./marisa.png";
+  enemySpeed = 5;
+
+  // スコア初期化
+  score = 0;
 }
 
 function keydown(e) {
@@ -34,12 +47,28 @@ function gameloop() {
 }
 
 function update() {
+  // 自キャラの状態更新
   speed = speed + acceleration;
   characterPosY = characterPosY + speed;
   if (characterPosY > 400) {
     characterPosY = 400;
     speed = 0;
     acceleration = 0;
+  }
+
+  // 敵キャラの状態更新
+  enemyPosX -= enemySpeed;
+  if (enemyPosX < -100) {
+    enemyPosX = 600;
+    score += 100;
+  }
+
+  // 当たり判定
+  var diffX = characterPosX - enemyPosX;
+  var diffY = characterPosY - enemyPosY;
+  var distance = Math.sqrt(diffX * diffX + diffY * diffY);
+  if (distance < characterR + enemyR) {
+    enemySpeed = 0;
   }
 }
 
@@ -56,9 +85,16 @@ function draw() {
   );
 
   // 敵キャラクター描画
-  g,drawImage(
+  g.drawImage(
     enemyImage,
     enemyPosX - enemyImage.width / 2,
     enemyPosY - enemyImage.height / 2
   );
+
+  // スコア描画
+  g.fillStyle = "rgb(255,255,255)";
+  g.font = "16pt Arial";
+  var scoreLabel = "SCORE : " + score;
+  var scoreLabelWidth = g.measureText(scoreLabel).width;
+  g.fillText(scoreLabel, 460 - scoreLabelWidth, 40);
 }
