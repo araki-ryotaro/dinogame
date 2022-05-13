@@ -40,7 +40,7 @@ function init() {
   // player.image.src = "./reimu.png";
   // player.speed = 0;
   // player.acceleration = 0;
-  player = new Player(100, 400, 16, ".reimu.png", 0, 0);
+  player = new Player(100, 400, 16, "./reimu.png", 0, 0);
 
   // 敵キャラ初期化
   // enemy = new Sprite();
@@ -249,10 +249,10 @@ function draw() {
 // 当たり判定
 function hitCheck() {
   enemy.forEach((e) => {
-    var diffX = player.posx - enemy.posx;
-    var diffY = player.posy - enemy.posy;
+    var diffX = player.posx - e.posx;
+    var diffY = player.posy - e.posy;
     var distance = Math.sqrt(diffX * diffX + diffY * diffY);
-    if (distance < player.r + enemy.r) {
+    if (distance < player.r + e.r) {
       // 当たった時の処理
       scene = Scenes.GameOver;
       // player.speed = -20;
